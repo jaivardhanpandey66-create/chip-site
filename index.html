@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CHIP — Your holographic AI agent</title>
+<meta name="description" content="CHIP is a holographic AI agent that runs on your machine. Streaming, tool-wielding, PLAN/BUILD, voice, and native C++/Rust cores — with your API key, no cloud lock-in.">
+<style>
+  :root{
+    --bg:#02060c; --panel:#071120; --edge:#10283e;
+    --cyan:#7fd7ff; --cyan-dim:#37a6e0; --amber:#ffb020;
+    --ink:#d7ecff; --mut:#6d8caa; --line:rgba(127,215,255,.18);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  ::selection{background:rgba(127,215,255,.25)}
+  html{scroll-behavior:smooth}
+  body{
+    font:16px/1.6 ui-sans-serif,system-ui,"Segoe UI",Roboto,Arial,sans-serif;
+    background:
+      radial-gradient(1100px 600px at 50% -10%, rgba(31,127,191,.22), transparent 60%),
+      radial-gradient(800px 500px at 85% 110%, rgba(255,176,32,.06), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+  }
+  a{color:var(--cyan)}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  /* nav */
+  nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(10px);
+    background:rgba(2,6,12,.72);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;gap:26px;height:62px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.16em;color:#fff}
+  .brand .dot{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff,#7fd7ff 55%,#1f7fbf);box-shadow:0 0 14px var(--cyan)}
+  nav a.link{margin-left:auto;color:var(--mut);text-decoration:none;font-size:.92rem}
+  nav a.link:hover{color:var(--cyan)}
+  /* hero */
+  header.hero{padding:72px 0 40px;text-align:center}
+  .core{position:relative;width:168px;height:168px;margin:6px auto 26px}
+  .core .ball{position:absolute;inset:46px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#fff,#7fd7ff 40%,#1f7fbf 78%);
+    box-shadow:0 0 38px rgba(127,215,255,.8);animation:pulse 2.6s ease-in-out infinite}
+  .core svg{position:absolute;inset:0;animation:spin 9s linear infinite}
+  .core svg.slow{animation-duration:15s;animation-direction:reverse}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes pulse{50%{box-shadow:0 0 64px rgba(127,215,255,1);transform:scale(1.06)}}
+  .hero h1{font-size:clamp(3rem,9vw,5.4rem);letter-spacing:.14em;font-weight:800;
+    background:linear-gradient(180deg,#fff,var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero .tag{color:var(--mut);max-width:640px;margin:14px auto 26px;font-size:1.08rem}
+  .btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-block;padding:12px 26px;border-radius:999px;text-decoration:none;font-weight:600;letter-spacing:.03em;transition:.18s}
+  .btn.primary{background:linear-gradient(135deg,var(--cyan-dim),#1f7fbf);color:#03121f;box-shadow:0 8px 30px rgba(55,166,224,.35)}
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(55,166,224,.5)}
+  .btn.ghost{border:1px solid var(--line);color:var(--cyan)}
+  .btn.ghost:hover{background:rgba(127,215,255,.08)}
+  /* sections */
+  section{padding:64px 0}
+  .kicker{color:var(--amber);text-transform:uppercase;letter-spacing:.28em;font-size:.78rem;margin-bottom:10px}
+  h2{font-size:clamp(1.7rem,4vw,2.4rem);letter-spacing:.04em;margin-bottom:14px}
+  .sub{color:var(--mut);max-width:640px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:34px}
+  .card{background:linear-gradient(180deg,rgba(17,34,53,.7),rgba(7,17,32,.9));
+    border:1px solid var(--line);border-radius:16px;padding:22px;transition:.18s}
+  .card:hover{transform:translateY(-3px);border-color:rgba(127,215,255,.45);box-shadow:0 14px 40px rgba(0,0,0,.5)}
+  .card .ic{font-size:1.5rem;color:var(--cyan);margin-bottom:10px}
+  .card h3{font-size:1.02rem;margin-bottom:6px;color:#fff}
+  .card p{font-size:.9rem;color:var(--mut)}
+  /* terminal */
+  pre.term{background:#02060c;border:1px solid var(--line);border-radius:14px;padding:20px 22px;
+    font:13px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--ink);overflow-x:auto;margin-top:34px}
+  pre.term .c{color:var(--mut)} pre.term .o{color:var(--amber)} pre.term .g{color:#62e0a4}
+  /* stats band */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-top:34px}
+  .stat{border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center}
+  .stat b{font-size:1.7rem;color:#fff;display:block}
+  .stat span{font-size:.82rem;color:var(--mut)}
+  /* repo cards */
+  .repos{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:34px}
+  .repo{border:1px solid var(--line);border-radius:14px;padding:18px 20px;text-decoration:none;color:var(--ink);display:block;transition:.18s;background:rgba(17,34,53,.5)}
+  .repo:hover{border-color:rgba(255,176,32,.5);transform:translateY(-2px)}
+  .repo b{color:#fff;font-size:1.02rem}
+  .repo span{display:block;font-size:.86rem;color:var(--mut);margin-top:4px}
+  .repo .go{color:var(--amber);font-weight:700}
+  footer{padding:34px 0 44px;border-top:1px solid var(--line);color:var(--mut);font-size:.88rem;text-align:center}
+  footer a{color:var(--cyan);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span>CHIP</div>
+    <a class="link" href="#stack">How it works</a>
+    <a class="link" href="#get">Install</a>
+    <a class="link" href="#repos">Repos</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="core">
+    <svg viewBox="0 0 168 168" fill="none" stroke="#37a6e0" stroke-width="2" opacity=".9">
+      <circle cx="84" cy="84" r="74" stroke-dasharray="20 14"/>
+      <circle cx="84" cy="84" r="62" stroke-dasharray="4 10" stroke="#7fd7ff"/>
+      <circle cx="84" cy="84" r="50" stroke-dasharray="28 8" stroke="#1f7fbf" stroke-width="1.6"/>
+    </svg>
+    <svg class="slow" viewBox="0 0 168 168" fill="none" stroke="#ffb020" stroke-width="2.4" stroke-linecap="round">
+      <path d="M78 18 A82 82 0 0 1 130 60"/>
+      <circle cx="84" cy="84" r="6" fill="#ffb020"/>
+    </svg>
+    <div class="ball"></div>
+  </div>
+  <h1>CHIP</h1>
+  <p class="tag">Your holographic AI agent for the machine you already own.
+     Streaming, tool-wielding, bilingual in PLAN and BUILD — powered by
+     C++ and Rust cores compiled onto your hardware. Keyless. No cloud lock-in.</p>
+  <div class="btns">
+    <a class="btn primary" href="#get">Get CHIP</a>
+    <a class="btn ghost" href="https://github.com/jaivardhanpandey66-create/chip">Source on GitHub</a>
+  </div>
+</header>
+
+<section id="stack">
+  <div class="wrap">
+    <div class="kicker">01 · The stack</div>
+    <h2>Native where it counts</h2>
+    <p class="sub">A thin Python agent loop shells out to native cores for the
+       hot paths — no Electron, no Docker, no server farm. Your machine does the work.</p>
+    <div class="grid">
+      <div class="card"><div class="ic">⚡</div><h3>SSE streaming</h3><p>Token-by-token responses framed by a C++ SSE encoder, delivered over a lightweight HTTP server.</p></div>
+      <div class="card"><div class="ic">🔧</div><h3>Tools &amp; delegation</h3><p>Real tools on your box — shell, files, system info — plus a built-in delegate that spawns sub-agents.</p></div>
+      <div class="card"><div class="ic">🗺️</div><h3>PLAN / BUILD</h3><p>Mode-aware agent. Sketches a plan first, then builds. No more one-shot wall-of-text.</p></div>
+      <div class="card"><div class="ic">🧠</div><h3>Rust context budget</h3><p>A std-only Rust token estimator trims conversation context to a 32k-token budget in one call.</p></div>
+      <div class="card"><div class="ic">🗣️</div><h3>Voice</h3><p>Speak to it and hear it speak back — browser-level mic capture and playback, server-side TTS.</p></div>
+      <div class="card"><div class="ic">🚀</div><h3>TTS cache</h3><p>C++ LRU with SHA-256 ETags: repeated audio is served in ~3&nbsp;ms instead of a ~500&nbsp;ms network round-trip (~156×).</p></div>
+      <div class="card"><div class="ic">🔒</div><h3>Keyless by default</h3><p>No secret ships in the repo. Paste your key into one constant or set an env var — yours, kept local.</p></div>
+      <div class="card"><div class="ic">🐧</div><h3>Everywhere</h3><p>Linux, Windows, macOS. C++ builds to .so/.dll/.dylib; the Rust core is pure std with zero deps.</p></div>
+    </div>
+    <pre class="term"><span class="c"># the whole stack, from one clone</span>
+$ git clone https://github.com/jaivardhanpandey66-create/chip-app.git
+$ cd chip-app &amp;&amp; ./install.sh
+$ export OPENROUTER_API_KEY=<span class="o">sk-or-v1-…</span>   <span class="c"># or: echo -n 'key' &gt; ~/.config/chip/key</span>
+$ python3 chip_web.py <span class="c"># → http://127.0.0.1:8000</span>
+<span class="g">✓ native C++ core loaded           ✓ rust core (chip_rs 0.1.0)</span>
+<span class="g">CHIP online — all systems nominal</span></pre>
+    <div class="stats">
+      <div class="stat"><b>156×</b><span>faster TTS hits</span></div>
+      <div class="stat"><b>32k</b><span>context budget</span></div>
+      <div class="stat"><b>0</b><span>dependencies in Rust core</span></div>
+      <div class="stat"><b>100%</b><span>local orchestration</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="get">
+  <div class="wrap">
+    <div class="kicker">02 · Install</div>
+    <h2>Three ways to run CHIP</h2>
+    <div class="grid">
+      <div class="card"><div class="ic">🖥️</div><h3>Linux desktop app</h3><p>Native GTK window, app-menu entry, arc-reactor icon. No Electron.</p>
+        <p style="margin-top:10px"><a href="https://github.com/jaivardhanpandey66-create/chip-app">chip-app →</a></p></div>
+      <div class="card"><div class="ic">📦</div><h3>Core agent repo</h3><p>The engine: streaming server, holographic UI, C++/Rust build scripts.</p>
+        <p style="margin-top:10px"><a href="https://github.com/jaivardhanpandey66-create/chip">chip →</a></p></div>
+      <div class="card"><div class="ic">☁️</div><h3>Any browser</h3><p>Run chip_web.py on any OS and open the holographic UI in your browser.</p>
+        <p style="margin-top:10px"><a href="https://github.com/jaivardhanpandey66-create/chip">same repo →</a></p></div>
+    </div>
+    <pre class="term"><span class="c"># API key (free) — one time</span>
+$ open https://openrouter.ai
+$ echo -n '<span class="o">sk-or-v1-your-key</span>' &gt; ~/.config/chip/key
+<span class="c"># then just run</span>
+$ python3 chip_web.py</pre>
+  </div>
+</section>
+
+<section id="repos">
+  <div class="wrap">
+    <div class="kicker">03 · The family</div>
+    <h2>One agent, several skins</h2>
+    <div class="repos">
+      <a class="repo" href="https://github.com/jaivardhanpandey66-create/chip">
+        <b>chip</b><span>Core engine · web UI · C++ + Rust cores.</span><span class="go">→</span></a>
+      <a class="repo" href="https://github.com/jaivardhanpandey66-create/chip-app">
+        <b>chip-app</b><span>Native Linux desktop wrapper (GTK + WebKit).</span><span class="go">→</span></a>
+      <a class="repo" href="https://github.com/jaivardhanpandey66-create/jarvis">
+        <b>jarvis</b><span>Keyless cross-platform companion, Windows-ready.</span><span class="go">→</span></a>
+      <a class="repo" href="https://github.com/jaivardhanpandey66-create/john">
+        <b>john</b><span>macOS-native build — system say voice, Mac telemetry.</span><span class="go">→</span></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Built for the machine on your desk.<br>
+    <a href="https://github.com/jaivardhanpandey66-create/chip">chip</a> ·
+    <a href="https://github.com/jaivardhanpandey66-create/chip-app">chip-app</a> ·
+    <a href="https://github.com/jaivardhanpandey66-create/jarvis">jarvis</a> ·
+    <a href="https://github.com/jaivardhanpandey66-create/john">john</a> ·
+    MIT
+  </div>
+</footer>
+
+</body>
+</html>
