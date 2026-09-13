@@ -170,9 +170,28 @@ $ python3 chip_web.py</pre>
   </div>
 </section>
 
-<section id="repos">
+<section id="family">
   <div class="wrap">
     <div class="kicker">03 · The family</div>
+    <h2>jarvis &amp; john — siblings, not clones</h2>
+    <p class="sub">The same engine, tuned for different rooms. Jarvis runs anywhere
+       (Windows-ready), John is macOS-native with the system&rsquo;s own voice.</p>
+    <div class="grid">
+      <div class="card"><div class="ic">🪟</div><h3>jarvis — cross-platform</h3><p>Keyless by default, Windows DLL loaders, port 8008. The daily driver.</p>
+        <pre class="term" style="margin-top:12px;padding:12px 14px"><span class="c">$</span> cd jarvis &amp;&amp; pip3 install --user openai
+<span class="c">$</span> python3 jarvis_web.py   <span class="c"># → :8008</span></pre></div>
+      <div class="card"><div class="ic">🍎</div><h3>john — macOS-native</h3><p>Speaks with the system <code>say</code> voice, reports real Mac telemetry, builds <span class="o">.dylib</span> cores.</p>
+        <pre class="term" style="margin-top:12px;padding:12px 14px"><span class="c">$</span> cd john &amp;&amp; ./build.sh &amp;&amp; ./build_rs.sh
+<span class="c">$</span> python3 john_web.py      <span class="c"># → :8010</span></pre></div>
+      <div class="card"><div class="ic">🐧</div><h3>And of course — chip</h3><p>The original: streaming agent, PLAN/BUILD, tools, voice, native cores.</p>
+        <pre class="term" style="margin-top:12px;padding:12px 14px"><span class="c">$</span> python3 chip_web.py      <span class="c"># → http://127.0.0.1:8000</span></pre></div>
+    </div>
+  </div>
+</section>
+
+<section id="repos">
+  <div class="wrap">
+    <div class="kicker">04 · Repos</div>
     <h2>One agent, several skins</h2>
     <div class="repos">
       <a class="repo" href="https://github.com/jaivardhanpandey66-create/chip">
